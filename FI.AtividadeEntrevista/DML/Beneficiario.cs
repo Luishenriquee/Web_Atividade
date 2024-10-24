@@ -11,9 +11,9 @@
         public long Id { get; set; }
 
         /// <summary>
-        /// ClienteId
+        /// IdCliente
         /// </summary>
-        public long ClienteId { get; set; }
+        public long IdCliente { get; set; }
 
         /// <summary>
         /// CPF
