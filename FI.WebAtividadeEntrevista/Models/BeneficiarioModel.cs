@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FI.WebAtividadeEntrevista.Language;
+using FI.WebAtividadeEntrevista.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace FI.WebAtividadeEntrevista.Models
 {
@@ -13,6 +15,7 @@ namespace FI.WebAtividadeEntrevista.Models
         /// CPF
         /// </summary>
         [Required]
+        [ValidationCPF(ErrorMessageResourceType = typeof(ValidationMsg), ErrorMessageResourceName = "MSG01")]
         public string CPF { get; set; }
 
         /// <summary>
