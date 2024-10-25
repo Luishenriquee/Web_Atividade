@@ -1,4 +1,5 @@
-﻿using FI.WebAtividadeEntrevista.Language;
+﻿using FI.AtividadeEntrevista.DML;
+using FI.WebAtividadeEntrevista.Language;
 using FI.WebAtividadeEntrevista.Models;
 using FI.WebAtividadeEntrevista.Validation;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace WebAtividadeEntrevista.Models
     /// </summary>
     public class ClienteModel
     {
+        private List<BeneficiarioModel> _listaBeneficiario;
+
         public long Id { get; set; }
 
         /// <summary>
@@ -78,6 +81,10 @@ namespace WebAtividadeEntrevista.Models
         /// Beneficiarios
         /// </summary>
         [Required]
-        public List<BeneficiarioModel> Beneficiarios { get; set; } = new List<BeneficiarioModel>();
+        public List<BeneficiarioModel> Beneficiarios
+        {
+            get => _listaBeneficiario = _listaBeneficiario == null ? new List<BeneficiarioModel>() : _listaBeneficiario;
+            set => _listaBeneficiario = value;
+        }
     }
 }

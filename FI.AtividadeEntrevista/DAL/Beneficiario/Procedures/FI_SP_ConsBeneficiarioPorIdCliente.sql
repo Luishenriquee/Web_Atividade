@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [FI_SP_ConsBeneficiario]
+﻿CREATE PROCEDURE [FI_SP_ConsBeneficiarioPorIdCliente]
 	@IDClIENTE BIGINT
 AS
 BEGIN

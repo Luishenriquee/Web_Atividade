@@ -146,7 +146,7 @@ namespace WebAtividadeEntrevista.Controllers
                 {
                     boBeneficiarios.Alterar(new Beneficiario
                     {
-                        Id = beneficiarioModel.Id,
+                        Id = beneficiarioModel.Id.Value,
                         Nome = beneficiarioModel.Nome,
                         CPF = beneficiarioModel.CPF,
                         IdCliente = model.Id
