@@ -15,7 +15,7 @@ namespace FI.WebAtividadeEntrevista.Models
         /// CPF
         /// </summary>
         [Required]
-        [ValidationCPF(ErrorMessageResourceType = typeof(ValidationMsg), ErrorMessageResourceName = "MSG01")]
+        [ValidationCPF(ErrorMessageResourceType = typeof(WebAtividadeEntrevistaMsg), ErrorMessageResourceName = "MSG01")]
         public string CPF { get; set; }
 
         /// <summary>

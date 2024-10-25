@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
 using System.Text;
 using FI.WebAtividadeEntrevista.Models;
+using FI.WebAtividadeEntrevista.Language;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -42,7 +43,7 @@ namespace WebAtividadeEntrevista.Controllers
             if (boCliente.VerificarExistencia(model.CPF))
             {
                 Response.StatusCode = 400;
-                return Json("CPF já cadastrado");
+                return Json(WebAtividadeEntrevistaMsg.MSG02);
             }
 
             var beneficiariosDuplicados = model.Beneficiarios
@@ -53,7 +54,7 @@ namespace WebAtividadeEntrevista.Controllers
 
             if (beneficiariosDuplicados.Any())
             {
-                var errorMessage = new StringBuilder("Beneficiários com CPFs duplicados:");
+                var errorMessage = new StringBuilder(WebAtividadeEntrevistaMsg.MSG03);
                 foreach (var cpf in beneficiariosDuplicados)
                     errorMessage.AppendLine(cpf);
 
@@ -86,7 +87,7 @@ namespace WebAtividadeEntrevista.Controllers
                 });
             }
 
-            return Json("Cadastro efetuado com sucesso");
+            return Json(WebAtividadeEntrevistaMsg.MSG04);
         }
 
         [HttpPost]
@@ -111,7 +112,7 @@ namespace WebAtividadeEntrevista.Controllers
                 if (model.Beneficiarios.Any(b => b.CPF == beneficiario.CPF && b.Id != beneficiario.Id))
                 {
                     Response.StatusCode = 400;
-                    return Json($"Beneficiário com o CPF '{beneficiario.CPF}' já cadastrado para este cliente");
+                    return Json(string.Format(WebAtividadeEntrevistaMsg.MSG06, beneficiario.CPF));
                 }
             }
 
@@ -130,14 +131,14 @@ namespace WebAtividadeEntrevista.Controllers
                 CPF = model.CPF
             });
 
-            AtualizarOuIncluirBeneficiarios(model, boBeneficiario, beneficiariosExistentes);
+            CadastrarOuAtualizarBeneficiario(model, boBeneficiario, beneficiariosExistentes);
 
-            RemoverBeneficiariosExcluidos(model, boBeneficiario, beneficiariosExistentes);
+            RemoverBeneficiariosExcluidos(boBeneficiario, beneficiariosExistentes);
 
-            return Json("Cadastro alterado com sucesso");
+            return Json(WebAtividadeEntrevistaMsg.MSG05);
         }
 
-        private void AtualizarOuIncluirBeneficiarios(ClienteModel model, BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
+        private void CadastrarOuAtualizarBeneficiario(ClienteModel model, BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
         {
             foreach (var beneficiarioModel in model.Beneficiarios)
             {
@@ -165,12 +166,10 @@ namespace WebAtividadeEntrevista.Controllers
             }
         }
 
-        private void RemoverBeneficiariosExcluidos(ClienteModel model, BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
+        private void RemoverBeneficiariosExcluidos(BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
         {
             foreach (var beneficiario in beneficiariosExistentes)
-            {
                 boBeneficiarios.Excluir(beneficiario.Id);
-            }
         }
 
         [HttpGet]

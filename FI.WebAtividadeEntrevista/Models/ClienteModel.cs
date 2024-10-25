@@ -68,14 +68,14 @@ namespace WebAtividadeEntrevista.Models
         public string Telefone { get; set; }
 
         /// <summary>
-        /// Telefone
+        /// CPF
         /// </summary>
         [Required]
-        [ValidationCPF(ErrorMessageResourceType = typeof(ValidationMsg), ErrorMessageResourceName = "MSG01")]
+        [ValidationCPF(ErrorMessageResourceType = typeof(WebAtividadeEntrevistaMsg), ErrorMessageResourceName = "MSG01")]
         public string CPF { get; set; }
 
         /// <summary>
-        /// Telefone
+        /// Beneficiarios
         /// </summary>
         [Required]
         public List<BeneficiarioModel> Beneficiarios { get; set; } = new List<BeneficiarioModel>();

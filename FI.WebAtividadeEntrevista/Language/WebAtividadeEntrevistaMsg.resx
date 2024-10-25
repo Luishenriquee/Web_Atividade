@@ -120,4 +120,19 @@
   <data name="MSG01" xml:space="preserve">
     <value>CPF informado não é válido</value>
   </data>
+  <data name="MSG02" xml:space="preserve">
+    <value>O CPF informado já se encontra cadastrado</value>
+  </data>
+  <data name="MSG03" xml:space="preserve">
+    <value>O Beneficiários com CPFs duplicados:</value>
+  </data>
+  <data name="MSG04" xml:space="preserve">
+    <value>Cadastro efetuado com sucesso</value>
+  </data>
+  <data name="MSG05" xml:space="preserve">
+    <value>Cadastro alterado com sucesso</value>
+  </data>
+  <data name="MSG06" xml:space="preserve">
+    <value>Beneficiário com o CPF '{0}' já cadastrado para este cliente</value>
+  </data>
 </root>

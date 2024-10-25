@@ -22,14 +22,14 @@ namespace FI.WebAtividadeEntrevista.Language {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ValidationMsg {
+    internal class WebAtividadeEntrevistaMsg {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ValidationMsg() {
+        internal WebAtividadeEntrevistaMsg() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace FI.WebAtividadeEntrevista.Language {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FI.WebAtividadeEntrevista.Language.ValidationMsg", typeof(ValidationMsg).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FI.WebAtividadeEntrevista.Language.WebAtividadeEntrevistaMsg", typeof(WebAtividadeEntrevistaMsg).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -66,6 +66,51 @@ namespace FI.WebAtividadeEntrevista.Language {
         internal static string MSG01 {
             get {
                 return ResourceManager.GetString("MSG01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O CPF informado já se encontra cadastrado.
+        /// </summary>
+        internal static string MSG02 {
+            get {
+                return ResourceManager.GetString("MSG02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to O Beneficiários com CPFs duplicados:.
+        /// </summary>
+        internal static string MSG03 {
+            get {
+                return ResourceManager.GetString("MSG03", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cadastro efetuado com sucesso.
+        /// </summary>
+        internal static string MSG04 {
+            get {
+                return ResourceManager.GetString("MSG04", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cadastro alterado com sucesso.
+        /// </summary>
+        internal static string MSG05 {
+            get {
+                return ResourceManager.GetString("MSG05", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beneficiário com o CPF &apos;{0}&apos; já cadastrado para este cliente.
+        /// </summary>
+        internal static string MSG06 {
+            get {
+                return ResourceManager.GetString("MSG06", resourceCulture);
             }
         }
     }

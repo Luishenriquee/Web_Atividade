@@ -144,10 +144,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Language\ValidationMsg.Designer.cs">
+    <Compile Include="Language\WebAtividadeEntrevistaMsg.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ValidationMsg.resx</DependentUpon>
+      <DependentUpon>WebAtividadeEntrevistaMsg.resx</DependentUpon>
     </Compile>
     <Compile Include="Models\BeneficiarioModel.cs" />
     <Compile Include="Models\ClienteModel.cs" />
@@ -388,9 +388,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Language\ValidationMsg.resx">
+    <EmbeddedResource Include="Language\WebAtividadeEntrevistaMsg.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ValidationMsg.Designer.cs</LastGenOutput>
+      <LastGenOutput>WebAtividadeEntrevistaMsg.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
