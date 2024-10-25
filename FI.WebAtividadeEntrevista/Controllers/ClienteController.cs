@@ -3,9 +3,10 @@ using WebAtividadeEntrevista.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using System.Text;
+using FI.WebAtividadeEntrevista.Models;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -25,8 +26,9 @@ namespace WebAtividadeEntrevista.Controllers
         [HttpPost]
         public JsonResult Incluir(ClienteModel model)
         {
-            BoCliente bo = new BoCliente();
-            
+            BoCliente boCliente = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -36,33 +38,63 @@ namespace WebAtividadeEntrevista.Controllers
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
             }
-            else
-            {
-                
-                model.Id = bo.Incluir(new Cliente()
-                {                    
-                    CEP = model.CEP,
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
-                    Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone,
-                    CPF = model.CPF
-                });
 
-           
-                return Json("Cadastro efetuado com sucesso");
+            if (boCliente.VerificarExistencia(model.CPF))
+            {
+                Response.StatusCode = 400;
+                return Json("CPF já cadastrado");
             }
+
+            var beneficiariosDuplicados = model.Beneficiarios
+                .GroupBy(b => b.CPF)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+
+            if (beneficiariosDuplicados.Any())
+            {
+                var errorMessage = new StringBuilder("Beneficiários com CPFs duplicados:");
+                foreach (var cpf in beneficiariosDuplicados)
+                    errorMessage.AppendLine(cpf);
+
+                Response.StatusCode = 400;
+                return Json(errorMessage.ToString());
+            }
+
+            model.Id = boCliente.Incluir(new Cliente()
+            {
+                CEP = model.CEP,
+                Cidade = model.Cidade,
+                Email = model.Email,
+                Estado = model.Estado,
+                Logradouro = model.Logradouro,
+                Nacionalidade = model.Nacionalidade,
+                Nome = model.Nome,
+                Sobrenome = model.Sobrenome,
+                Telefone = model.Telefone,
+                CPF = model.CPF
+            });
+
+            for (int i = 0; i < model.Beneficiarios.Count; i++)
+            {
+                BeneficiarioModel beneficiario = model.Beneficiarios[i];
+                boBeneficiario.Incluir(new Beneficiario
+                {
+                    Nome = beneficiario.Nome,
+                    CPF = beneficiario.CPF,
+                    IdCliente = model.Id
+                });
+            }
+
+            return Json("Cadastro efetuado com sucesso");
         }
 
         [HttpPost]
         public JsonResult Alterar(ClienteModel model)
         {
-            BoCliente bo = new BoCliente();
-       
+            BoCliente boCliente = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -72,33 +104,81 @@ namespace WebAtividadeEntrevista.Controllers
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
             }
-            else
+
+            List<Beneficiario> beneficiariosExistentes = boBeneficiario.Listar(model.Id);
+            foreach (Beneficiario beneficiario in beneficiariosExistentes)
             {
-                bo.Alterar(new Cliente()
+                if (model.Beneficiarios.Any(b => b.CPF == beneficiario.CPF && b.Id != beneficiario.Id))
                 {
-                    Id = model.Id,
-                    CEP = model.CEP,
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
-                    Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone,
-                    CPF = model.CPF
-                });
-                               
-                return Json("Cadastro alterado com sucesso");
+                    Response.StatusCode = 400;
+                    return Json($"Beneficiário com o CPF '{beneficiario.CPF}' já cadastrado para este cliente");
+                }
+            }
+
+            boCliente.Alterar(new Cliente()
+            {
+                Id = model.Id,
+                CEP = model.CEP,
+                Cidade = model.Cidade,
+                Email = model.Email,
+                Estado = model.Estado,
+                Logradouro = model.Logradouro,
+                Nacionalidade = model.Nacionalidade,
+                Nome = model.Nome,
+                Sobrenome = model.Sobrenome,
+                Telefone = model.Telefone,
+                CPF = model.CPF
+            });
+
+            AtualizarOuIncluirBeneficiarios(model, boBeneficiario, beneficiariosExistentes);
+
+            RemoverBeneficiariosExcluidos(model, boBeneficiario, beneficiariosExistentes);
+
+            return Json("Cadastro alterado com sucesso");
+        }
+
+        private void AtualizarOuIncluirBeneficiarios(ClienteModel model, BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
+        {
+            foreach (var beneficiarioModel in model.Beneficiarios)
+            {
+                if (beneficiarioModel.Id != null)
+                {
+                    boBeneficiarios.Alterar(new Beneficiario
+                    {
+                        Id = beneficiarioModel.Id,
+                        Nome = beneficiarioModel.Nome,
+                        CPF = beneficiarioModel.CPF,
+                        IdCliente = model.Id
+                    });
+
+                    beneficiariosExistentes.RemoveAll(x => x.Id == beneficiarioModel.Id);
+                }
+                else
+                {
+                    boBeneficiarios.Incluir(new Beneficiario
+                    {
+                        Nome = beneficiarioModel.Nome,
+                        CPF = beneficiarioModel.CPF,
+                        IdCliente = model.Id
+                    });
+                }
+            }
+        }
+
+        private void RemoverBeneficiariosExcluidos(ClienteModel model, BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
+        {
+            foreach (var beneficiario in beneficiariosExistentes)
+            {
+                boBeneficiarios.Excluir(beneficiario.Id);
             }
         }
 
         [HttpGet]
         public ActionResult Alterar(long id)
         {
-            BoCliente bo = new BoCliente();
-            Cliente cliente = bo.Consultar(id);
-            Models.ClienteModel model = null;
+            Cliente cliente = new BoCliente().Consultar(id);
+            List<Beneficiario> beneficiarios = new BoBeneficiario().Listar(cliente.Id);
+            ClienteModel model = null;
 
             if (cliente != null)
             {
@@ -114,10 +194,16 @@ namespace WebAtividadeEntrevista.Controllers
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
                     Telefone = cliente.Telefone,
-                    CPF = cliente.CPF
+                    CPF = cliente.CPF,
+                    Beneficiarios = beneficiarios
+                    .Select(beneficiario => new BeneficiarioModel
+                    {
+                        Id = beneficiario.Id,
+                        Nome = beneficiario.Nome,
+                        CPF = beneficiario.CPF
+                    })
+                .ToList()
                 };
-
-            
             }
 
             return View(model);

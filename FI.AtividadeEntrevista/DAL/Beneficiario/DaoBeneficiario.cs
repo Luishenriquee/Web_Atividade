@@ -59,11 +59,11 @@ namespace FI.AtividadeEntrevista.DAL.Beneficiario
         /// <summary>
         /// Lista todos os beneficiarios
         /// </summary>
-        internal List<DML.Beneficiario> Listar()
+        internal List<DML.Beneficiario> Listar(long clienteId)
         {
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", 0));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("IDClIENTE", clienteId));
 
             DataSet ds = base.Consultar("FI_SP_ConsBeneficiario", parametros);
             List<DML.Beneficiario> cli = Converter(ds);
