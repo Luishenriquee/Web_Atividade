@@ -8,6 +8,7 @@ using FI.AtividadeEntrevista.DML;
 using System.Text;
 using FI.WebAtividadeEntrevista.Models;
 using FI.WebAtividadeEntrevista.Language;
+using System.Text.RegularExpressions;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -54,7 +55,7 @@ namespace WebAtividadeEntrevista.Controllers
 
             if (beneficiariosDuplicados.Any())
             {
-                var errorMessage = new StringBuilder(WebAtividadeEntrevistaMsg.MSG03);
+                StringBuilder errorMessage = new StringBuilder(WebAtividadeEntrevistaMsg.MSG03);
                 foreach (var cpf in beneficiariosDuplicados)
                     errorMessage.AppendLine(cpf);
 
@@ -73,7 +74,7 @@ namespace WebAtividadeEntrevista.Controllers
                 Nome = model.Nome,
                 Sobrenome = model.Sobrenome,
                 Telefone = model.Telefone,
-                CPF = model.CPF
+                CPF = ExtrairNumeros(model.CPF)
             });
 
             for (int i = 0; i < model.Beneficiarios.Count; i++)
@@ -88,6 +89,11 @@ namespace WebAtividadeEntrevista.Controllers
             }
 
             return Json(WebAtividadeEntrevistaMsg.MSG04);
+        }
+
+        private string ExtrairNumeros(string num)
+        {
+            return Regex.Replace(num, @"\D", "");
         }
 
         [HttpPost]
@@ -128,7 +134,7 @@ namespace WebAtividadeEntrevista.Controllers
                 Nome = model.Nome,
                 Sobrenome = model.Sobrenome,
                 Telefone = model.Telefone,
-                CPF = model.CPF
+                CPF = ExtrairNumeros(model.CPF)
             });
 
             CadastrarOuAtualizarBeneficiario(model, boBeneficiario, beneficiariosExistentes);
@@ -148,7 +154,7 @@ namespace WebAtividadeEntrevista.Controllers
                     {
                         Id = beneficiarioModel.Id.Value,
                         Nome = beneficiarioModel.Nome,
-                        CPF = beneficiarioModel.CPF,
+                        CPF = ExtrairNumeros(beneficiarioModel.CPF),
                         IdCliente = model.Id
                     });
 
@@ -159,7 +165,7 @@ namespace WebAtividadeEntrevista.Controllers
                     boBeneficiarios.Incluir(new Beneficiario
                     {
                         Nome = beneficiarioModel.Nome,
-                        CPF = beneficiarioModel.CPF,
+                        CPF = ExtrairNumeros(beneficiarioModel.CPF),
                         IdCliente = model.Id
                     });
                 }
@@ -193,13 +199,13 @@ namespace WebAtividadeEntrevista.Controllers
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
                     Telefone = cliente.Telefone,
-                    CPF = cliente.CPF,
+                    CPF = ExtrairNumeros(cliente.CPF),
                     Beneficiarios = beneficiarios
                     .Select(beneficiario => new BeneficiarioModel
                     {
                         Id = beneficiario.Id,
                         Nome = beneficiario.Nome,
-                        CPF = beneficiario.CPF
+                        CPF = ExtrairNumeros(beneficiario.CPF)
                     })
                 .ToList()
                 };
