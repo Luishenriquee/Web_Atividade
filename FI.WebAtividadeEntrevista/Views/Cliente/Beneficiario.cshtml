@@ -1,0 +1,60 @@
+﻿<div id="beneficarios" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Beneficiários</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="formIncluirBeneficiario" method="post">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="CpfBeneficiario">CPF:</label>
+                                <input type="text" class="form-control" id="CpfBeneficiario" name="CpfBeneficiario"
+                                       placeholder="Ex.: 999.999.999-99" maxlength="14" required>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="NomeBeneficiario">Nome:</label>
+                                <input type="text" class="form-control" id="NomeBeneficiario" name="NomeBeneficiario"
+                                       placeholder="Ex.: Luis Henrique" maxlength="50" required>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group" style="margin-top: 0.3rem;">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-success btn-block">Incluir</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="tabelaBenficiario" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>CPF</th>
+                                    <th>Nome</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<asp:Button Text="Open Modal" ID="modal" CssClass="btn btn-primary" OnClick="modal_Click" runat="server" />
