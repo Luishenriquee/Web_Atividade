@@ -67,8 +67,8 @@
             url: urlPost,
             method: "POST",
             data: obterDadosFormulario(beneficiarios),
-            error: tratarErroAjax,
-            success: tratarSucessoAjax
+            error: tratarErro,
+            success: tratarSucesso
         });
     }
 
@@ -99,12 +99,12 @@
         };
     }
 
-    function tratarErroAjax(response) {
+    function tratarErro(response) {
         const mensagem = response.status === 400 ? response.responseJSON : "Ocorreu um erro interno no servidor.";
         ModalDialog("Ocorreu um erro", mensagem);
     }
 
-    function tratarSucessoAjax(response) {
+    function tratarSucesso(response) {
         ModalDialog("Sucesso!", response);
         $("#formCadastro")[0].reset();
         window.location.href = urlRetorno;
@@ -162,25 +162,25 @@
 });
 
 function ModalDialog(titulo, texto) {
-    const random = Math.random().toString().replace('.', '');
-    const modalHtml = `
-        <div id="${random}" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title">${titulo}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>${texto}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    $('body').append(modalHtml);
+    var random = Math.random().toString().replace('.', '');
+    var texto = '<div id="' + random + '" class="modal fade">                                                               ' +
+        '        <div class="modal-dialog">                                                                                 ' +
+        '            <div class="modal-content">                                                                            ' +
+        '                <div class="modal-header">                                                                         ' +
+        '                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>         ' +
+        '                    <h4 class="modal-title">' + titulo + '</h4>                                                    ' +
+        '                </div>                                                                                             ' +
+        '                <div class="modal-body">                                                                           ' +
+        '                    <p>' + texto + '</p>                                                                           ' +
+        '                </div>                                                                                             ' +
+        '                <div class="modal-footer">                                                                         ' +
+        '                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>             ' +
+        '                                                                                                                   ' +
+        '                </div>                                                                                             ' +
+        '            </div><!-- /.modal-content -->                                                                         ' +
+        '  </div><!-- /.modal-dialog -->                                                                                    ' +
+        '</div> <!-- /.modal -->                                                                                        ';
+
+    $('body').append(texto);
     $('#' + random).modal('show');
 }

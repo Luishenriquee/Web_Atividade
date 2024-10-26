@@ -47,20 +47,20 @@ namespace WebAtividadeEntrevista.Controllers
                 return Json(WebAtividadeEntrevistaMsg.MSG02);
             }
 
-            var beneficiariosDuplicados = model.Beneficiarios
+            var beneficiariosDuplicado = model.Beneficiarios
                 .GroupBy(b => b.CPF)
                 .Where(g => g.Count() > 1)
                 .Select(g => g.Key)
                 .ToList();
 
-            if (beneficiariosDuplicados.Any())
+            if (beneficiariosDuplicado.Any())
             {
-                StringBuilder errorMessage = new StringBuilder(WebAtividadeEntrevistaMsg.MSG03);
-                foreach (var cpf in beneficiariosDuplicados)
-                    errorMessage.AppendLine(cpf);
+                StringBuilder mensagemErro = new StringBuilder(WebAtividadeEntrevistaMsg.MSG03);
+                foreach (var cpf in beneficiariosDuplicado)
+                    mensagemErro.AppendLine(cpf);
 
                 Response.StatusCode = 400;
-                return Json(errorMessage.ToString());
+                return Json(mensagemErro.ToString());
             }
 
             model.Id = boCliente.Incluir(new Cliente()
@@ -91,11 +91,6 @@ namespace WebAtividadeEntrevista.Controllers
             return Json(WebAtividadeEntrevistaMsg.MSG04);
         }
 
-        private string ExtrairNumeros(string num)
-        {
-            return Regex.Replace(num, @"\D", "");
-        }
-
         [HttpPost]
         public JsonResult Alterar(ClienteModel model)
         {
@@ -112,8 +107,8 @@ namespace WebAtividadeEntrevista.Controllers
                 return Json(string.Join(Environment.NewLine, erros));
             }
 
-            List<Beneficiario> beneficiariosExistentes = boBeneficiario.Listar(model.Id);
-            foreach (Beneficiario beneficiario in beneficiariosExistentes)
+            List<Beneficiario> beneficiariosExistente = boBeneficiario.Listar(model.Id);
+            foreach (Beneficiario beneficiario in beneficiariosExistente)
             {
                 if (model.Beneficiarios.Any(b => b.CPF == beneficiario.CPF && b.Id != beneficiario.Id))
                 {
@@ -137,16 +132,16 @@ namespace WebAtividadeEntrevista.Controllers
                 CPF = ExtrairNumeros(model.CPF)
             });
 
-            CadastrarOuAtualizarBeneficiario(model, boBeneficiario, beneficiariosExistentes);
+            CadastrarOuAtualizarBeneficiario(model, boBeneficiario, beneficiariosExistente);
 
-            RemoverBeneficiariosExcluidos(boBeneficiario, beneficiariosExistentes);
+            RemoverBeneficiarios(boBeneficiario, beneficiariosExistente);
 
             return Json(WebAtividadeEntrevistaMsg.MSG05);
         }
 
-        private void CadastrarOuAtualizarBeneficiario(ClienteModel model, BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
+        private void CadastrarOuAtualizarBeneficiario(ClienteModel clienteModel, BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistente)
         {
-            foreach (var beneficiarioModel in model.Beneficiarios)
+            foreach (var beneficiarioModel in clienteModel.Beneficiarios)
             {
                 if (beneficiarioModel.Id != null)
                 {
@@ -155,10 +150,10 @@ namespace WebAtividadeEntrevista.Controllers
                         Id = beneficiarioModel.Id.Value,
                         Nome = beneficiarioModel.Nome,
                         CPF = ExtrairNumeros(beneficiarioModel.CPF),
-                        IdCliente = model.Id
+                        IdCliente = clienteModel.Id
                     });
 
-                    beneficiariosExistentes.RemoveAll(x => x.Id == beneficiarioModel.Id);
+                    beneficiariosExistente.RemoveAll(x => x.Id == beneficiarioModel.Id);
                 }
                 else
                 {
@@ -166,16 +161,10 @@ namespace WebAtividadeEntrevista.Controllers
                     {
                         Nome = beneficiarioModel.Nome,
                         CPF = ExtrairNumeros(beneficiarioModel.CPF),
-                        IdCliente = model.Id
+                        IdCliente = clienteModel.Id
                     });
                 }
             }
-        }
-
-        private void RemoverBeneficiariosExcluidos(BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistentes)
-        {
-            foreach (var beneficiario in beneficiariosExistentes)
-                boBeneficiarios.Excluir(beneficiario.Id);
         }
 
         [HttpGet]
@@ -183,11 +172,11 @@ namespace WebAtividadeEntrevista.Controllers
         {
             Cliente cliente = new BoCliente().Consultar(id);
             List<Beneficiario> beneficiarios = new BoBeneficiario().Listar(cliente.Id);
-            ClienteModel model = null;
+            ClienteModel clienteModel = null;
 
             if (cliente != null)
             {
-                model = new ClienteModel()
+                clienteModel = new ClienteModel()
                 {
                     Id = cliente.Id,
                     CEP = cliente.CEP,
@@ -211,7 +200,7 @@ namespace WebAtividadeEntrevista.Controllers
                 };
             }
 
-            return View(model);
+            return View(clienteModel);
         }
 
         [HttpPost]
@@ -239,6 +228,17 @@ namespace WebAtividadeEntrevista.Controllers
             {
                 return Json(new { Result = "ERROR", Message = ex.Message });
             }
+        }
+
+        private string ExtrairNumeros(string num)
+        {
+            return Regex.Replace(num, @"\D", "");
+        }
+
+        private void RemoverBeneficiarios(BoBeneficiario boBeneficiarios, List<Beneficiario> beneficiariosExistente)
+        {
+            foreach (var beneficiario in beneficiariosExistente)
+                boBeneficiarios.Excluir(beneficiario.Id);
         }
     }
 }
